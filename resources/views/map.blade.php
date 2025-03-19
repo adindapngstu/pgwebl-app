@@ -18,7 +18,7 @@
 @section('content')
     <div id="map"></div>
 
-    <!-- Modal -->
+    <!-- Modal Create Point-->
     <div class="modal fade" id="CreatePointModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -27,7 +27,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST" action="{{ route('points.store') }}">
-                <div class="modal-body">
+                    <div class="modal-body">
 
                         @csrf
 
@@ -39,22 +39,102 @@
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" name="description" placeholder="Fill point description" required
-                                rows="3"></textarea>
+                            <textarea class="form-control" id="description" name="description" placeholder="Fill point description" rows="3"></textarea>
                         </div>
+
 
                         <div class="mb-3">
                             <label for="geom_point" class="form-label">Geometry</label>
                             <textarea class="form-control" id="geom_point" name="geom_point" placeholder="" required rows="3"></textarea>
                         </div>
 
-                </div>
+                    </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Create Polyline-->
+    <div class="modal fade" id="CreatePolylineModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Polyline</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </form>
+                <form method="POST" action="{{ route('polylines.store') }}">
+                    <div class="modal-body">
+
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                placeholder="Fill point name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" placeholder="Fill point description" rows="3"></textarea>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="geom_polyline" class="form-label">Geometry</label>
+                            <textarea class="form-control" id="geom_polyline" name="geom_polyline" placeholder="" required rows="3"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Create Polygons-->
+    <div class="modal fade" id="CreatePolygonModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Polygons</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ route('polygons.store') }}">
+                    <div class="modal-body">
+
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                placeholder="Fill polygon name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" placeholder="Fill point description" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="geom_polygon" class="form-label">Geometry</label>
+                            <textarea class="form-control" id="geom_polygon" name="geom_polygon" placeholder="" required rows="3"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -103,18 +183,22 @@
             var objectGeometry = Terraformer.geojsonToWKT(drawnJSONObject.geometry);
 
             console.log(drawnJSONObject);
-            // console.log(objectGeometry);
 
             if (type === 'polyline') {
                 console.log("Create " + type);
+                $('#geom_polyline').val(objectGeometry); // ✅ Menambahkan data geometry polyline
+                $('#CreatePolylineModal').modal('show'); // ✅ Menampilkan modal polyline
+
             } else if (type === 'polygon' || type === 'rectangle') {
                 console.log("Create " + type);
+                $('#geom_polygon').val(objectGeometry); // ✅ Menambahkan data geometry polygon
+                $('#CreatePolygonModal').modal('show'); // ✅ Menampilkan modal polygon
+
             } else if (type === 'marker') {
                 console.log("Create " + type);
+                $('#geom_point').val(objectGeometry); // ✅ Menambahkan data geometry point
+                $('#CreatePointModal').modal('show'); // ✅ Menampilkan modal point
 
-                $('#geom_point').val(objectGeometry);
-
-                $('#CreatePointModal').modal('show');
             } else {
                 console.log('__undefined__');
             }

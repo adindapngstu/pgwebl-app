@@ -14,7 +14,6 @@ class PointsController extends Controller
 
     public function index()
     {
-
         $data = [
             'title' => 'Map',
         ];
@@ -35,18 +34,39 @@ class PointsController extends Controller
      */
     public function store(Request $request)
     {
+        // Validasi input (kembalikan validasi 'description' agar tetap wajib diisi)
+        $request->validate(
+            [
+                'name' => 'required|unique:points,name',
+                'description' => 'required', // Description kembali menjadi wajib
+                'geom_point' => 'required',
+            ],
+            [
+                'name.required' => 'Point name is required',
+                'name.unique' => 'Point name already exists',
+                'description.required' => 'Description is required',
+                'geom_point.required' => 'Geometry point is required',
+            ]
+        );
+
+        // Cek apakah description kosong
+        if (empty($request->description)) {
+            return redirect()->route('map')->with('error', 'Description is required');
+        }
+
         $data = [
             'geom' => $request->geom_point,
             'name' => $request->name,
             'description' => $request->description,
         ];
 
+        // Buat data
+        if (!$this->points->create($data)) {
+            return redirect()->route('map')->with('error', 'Point failed to add');
+        }
 
-        // Create data
-        $this->points->create($data);
-
-        //Redirect to the map
-        return redirect()->route('map');
+        //Redirect ke halaman peta
+        return redirect()->route('map')->with('success', 'Point has been added');
     }
 
     /**
