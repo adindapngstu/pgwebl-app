@@ -40,6 +40,7 @@ class PointsController extends Controller
                 'name' => 'required|unique:points,name',
                 'description' => 'required', // Description kembali menjadi wajib
                 'geom_point' => 'required',
+                'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2000', // Validasi untuk gambar
             ],
             [
                 'name.required' => 'Point name is required',
@@ -48,6 +49,18 @@ class PointsController extends Controller
                 'geom_point.required' => 'Geometry point is required',
             ]
         );
+
+        //Create image directory
+        if (!is_dir('storage/images')) {
+            mkdir('./storage/images', 0777);}
+
+         //Get Image file
+    if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name_image = time() . "_point." . strtolower($image->getClientOriginalExtension());
+            $image->move('storage/images', $name_image);
+            } else {
+            $name_image = null;}
 
         // Cek apakah description kosong
         if (empty($request->description)) {
@@ -58,6 +71,7 @@ class PointsController extends Controller
             'geom' => $request->geom_point,
             'name' => $request->name,
             'description' => $request->description,
+            'image'=> $name_image,
         ];
 
         // Buat data

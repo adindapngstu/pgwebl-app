@@ -32,24 +32,45 @@ class PolylinesController extends Controller
             [
                 'name' => 'required|unique:polylines,name',
                 'geom_polyline' => 'required',
+                'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2000', // Validasi untuk gambar
             ],
             [
                 'name.required' => 'Name is required',
                 'name.unique' => 'Name already exists',
                 'description.required' => 'Description is required',
                 'geom_polyline.required' => 'Geometry polyline is required',
+
             ]
         );
+
+        //Create image directory
+        if (!is_dir('storage/images')) {
+            mkdir('./storage/images', 0777);}
+
+         //Get Image file
+    if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name_image = time() . "_polyline." . strtolower($image->getClientOriginalExtension());
+            $image->move('storage/images', $name_image);
+            } else {
+            $name_image = null;}
 
         // Cek apakah description kosong
         if (empty($request->description)) {
             return redirect()->route('map')->with('error', 'Description is required');
         }
 
+        // Cek apakah description kosong
+        if (empty($request->description)) {
+            return redirect()->route('map')->with('error', 'Description is required');
+        }
+
+
         $data = [
             'geom' => $request->geom_polyline,
             'name' => $request->name,
             'description' => $request->description,
+            'image' => $name_image,
         ];
 
         // Buat data
