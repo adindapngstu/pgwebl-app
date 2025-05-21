@@ -221,7 +221,7 @@
             } else if (type === 'marker') {
                 console.log("Create " + type);
                 $('#geom_point').val(objectGeometry);
-                $('#CreatePointModal').modal('show'); 
+                $('#CreatePointModal').modal('show');
 
             } else {
                 console.log('__undefined__');
@@ -233,14 +233,32 @@
         //GeoJSON Points
         var point = L.geoJson(null, {
             onEachFeature: function(feature, layer) {
-                var popupContent = `
-            <div style="width: 220px;">
-                <h5 style="margin: 0 0 5px 0;">${feature.properties.name}</h5>
-                <p style="margin: 0 0 5px 0;"><strong>Deskripsi:</strong> ${feature.properties.description}</p>
-                <p style="margin: 0 0 5px 0;"><strong>Dibuat:</strong> ${feature.properties.created_at}</p>
-                <img src="{{ asset('storage/images') }}/${feature.properties.image}" style="width: 100%; border-radius: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.2);" />
-            </div>
-        `;
+
+                var routedelete = "{{ route('points.destroy', ':id') }}";
+                routedelete = routedelete.replace(':id', feature.properties.id);
+
+                var routeedit = "{{ route('points.edit', ':id') }}";
+                routeedit = routeedit.replace(':id', feature.properties.id);
+
+                var popupContent =
+                    "Nama: " + feature.properties.name + "<br>" +
+                    "Deskripsi: " + feature.properties.description + "<br>" +
+                    "Dibuat: " + feature.properties.created_at + "<br>" +
+                    "<img src='{{ asset('storage/images') }}/" + feature.properties.image +
+                    "' width='200' height='200' alt=''/>" + "<br>" +
+                    "<div class='row mt-4'>" +
+                    "<div class='col text-center'>" +
+                    "<a href='" + routeedit +
+                    "' class='btn btn-sm btn-warning mx-2'><i class='fa-solid fa-pen-to-square'></i></a>" +
+                    "<form method='POST' action='" + routedelete + "' style='display:inline-block;'>" +
+                    '@csrf' +
+                    '@method('DELETE')' +
+                    "<button type='submit' class='btn btn-sm btn-danger mx-2' onclick='return confirm(`Yakin akan dihapus?`)'>" +
+                    "<i class='fa-solid fa-trash-can'></i>" +
+                    "</button>" +
+                    "</form>" +
+                    "</div>" +
+                    "</div>";
 
                 layer.bindPopup(popupContent);
                 layer.bindTooltip(
@@ -263,12 +281,32 @@
         //GeoJSON Polylines
         var polyline = L.geoJson(null, {
             onEachFeature: function(feature, layer) {
+                var routedelete = "{{ route('polylines.destroy', ':id') }}";
+                routedelete = routedelete.replace(':id', feature.properties.id);
+
+                var routeedit = "{{ route('polylines.edit', ':id') }}";
+                routeedit = routeedit.replace(':id', feature.properties.id);
+
                 var popupContent =
                     "Nama: " + feature.properties.name + "<br>" +
                     "Deskripsi: " + feature.properties.description + "<br>" +
                     "Dibuat: " + feature.properties.created_at + "<br>" +
                     "<img src='{{ asset('storage/images') }}/" + feature.properties.image +
-                    "' width='200' height='200' />";
+                    "' width='200' height='200' alt=''/>" + "<br>" +
+                    "<div class='row mt-4'>" +
+                    "<div class='col text-center'>" +
+                    "<a href='" + routeedit +
+                    "' class='btn btn-sm btn-warning mx-2'><i class='fa-solid fa-pen-to-square'></i></a>" +
+                    "<form method='POST' action='" + routedelete + "' style='display:inline-block;'>" +
+                    '@csrf' +
+                    '@method('DELETE')' +
+                    "<button type='submit' class='btn btn-sm btn-danger mx-2' onclick='return confirm(`Yakin akan dihapus?`)'>" +
+                    "<i class='fa-solid fa-trash-can'></i>" +
+                    "</button>" +
+                    "</form>" +
+                    "</div>" +
+                    "</div>";
+
 
                 layer.on({
                     click: function(e) {
@@ -281,6 +319,8 @@
             }
         });
 
+
+        //BARU SAMPE SINIIIII
         $.getJSON("{{ route('api.polylines') }}", function(data) {
             polyline.addData(data);
             map.addLayer(polyline);
@@ -290,12 +330,33 @@
         // GeoJSON Polygon
         var polygon = L.geoJson(null, {
             onEachFeature: function(feature, layer) {
+
+                var routedelete = "{{ route('polygons.destroy', ':id') }}";
+                routedelete = routedelete.replace(':id', feature.properties.id);
+
+                var routeedit = "{{ route('polygons.edit', ':id') }}";
+                routeedit = routeedit.replace(':id', feature.properties.id);
+
                 var popupContent =
                     "Nama: " + feature.properties.name + "<br>" +
                     "Deskripsi: " + feature.properties.description + "<br>" +
                     "Dibuat: " + feature.properties.created_at + "<br>" +
                     "<img src='{{ asset('storage/images') }}/" + feature.properties.image +
-                    "' width='200' height='200' />";
+                    "' width='200' height='200' alt=''/>" + "<br>" +
+                    "<div class='row mt-4'>" +
+                    "<div class='col text-center'>" +
+                    "<a href='" + routeedit +
+                    "' class='btn btn-sm btn-warning mx-2'><i class='fa-solid fa-pen-to-square'></i></a>" +
+                    "<form method='POST' action='" + routedelete + "' style='display:inline-block;'>" +
+                    '@csrf' +
+                    '@method('DELETE')' +
+                    "<button type='submit' class='btn btn-sm btn-danger mx-2' onclick='return confirm(`Yakin akan dihapus?`)'>" +
+                    "<i class='fa-solid fa-trash-can'></i>" +
+                    "</button>" +
+                    "</form>" +
+                    "</div>" +
+                    "</div>";
+
 
                 layer.on({
                     click: function(e) {

@@ -13,7 +13,7 @@ class PointsModel extends Model
     public function geojson_points()
     {
         $points = $this->newQuery()
-            ->select(DB::raw('ST_AsGeoJSON(geom) as geom, name, description, image, created_at, updated_at'))
+            ->select(DB::raw(' id, ST_AsGeoJSON(geom) as geom, name, description, image, created_at, updated_at'))
             ->get();
 
         // Struktur GeoJSON
@@ -27,6 +27,40 @@ class PointsModel extends Model
                 'type' => 'Feature',
                 'geometry' => json_decode($p->geom), // Konversi dari JSON
                 'properties' => [
+                    'id' => $p->id,
+                    'name' => $p->name,
+                    'description' => $p->description,
+                    'created_at' => $p->created_at,
+                    'updated_at' => $p->updated_at,
+                    'image' => $p->image,
+                ],
+            ];
+
+            array_push($geojson['features'], $feature);
+        }
+
+        return $geojson;
+    }
+
+    public function geojson_point($id)
+    {
+        $points = $this->newQuery()
+            ->select(DB::raw(' id, ST_AsGeoJSON(geom) as geom, name, description, image, created_at, updated_at'))
+            ->where('id', $id)
+            ->get();
+
+        // Struktur GeoJSON
+        $geojson = [
+            'type' => 'FeatureCollection',
+            'features' => [],
+        ];
+
+        foreach ($points as $p) {
+            $feature = [
+                'type' => 'Feature',
+                'geometry' => json_decode($p->geom), // Konversi dari JSON
+                'properties' => [
+                    'id' => $p->id,
                     'name' => $p->name,
                     'description' => $p->description,
                     'created_at' => $p->created_at,
