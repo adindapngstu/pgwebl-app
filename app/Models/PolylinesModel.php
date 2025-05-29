@@ -13,7 +13,16 @@ class PolylinesModel extends Model
     public function geojson_polylines()
     {
         $polylines = $this->newQuery()
-            ->select(DB::raw('id, ST_AsGeoJSON(geom) as geom, name, description, st_length(geom, true)/1000 as length_km, image, created_at, updated_at'))
+            ->select(DB::raw('polylines.id,
+            ST_AsGeoJSON(polylines.geom) as geom,
+            polylines.name,
+            polylines.description,
+            polylines.image,
+            polylines.created_at,
+            polylines.updated_at,
+            polylines.user_id,
+            users.name as user_created'))
+            ->leftJoin('users', 'polylines.user_id', '=', 'users.id')
             ->get();
 
         // Struktur GeoJSON
@@ -33,6 +42,8 @@ class PolylinesModel extends Model
                     'created_at' => $p->created_at,
                     'updated_at' => $p->updated_at,
                     'image' => $p->image,
+                    'user_id'=>$p->user_id,
+                    'user_created' => $p->user_created,
                 ],
             ];
 
@@ -44,7 +55,7 @@ class PolylinesModel extends Model
     public function geojson_polyline($id)
     {
         $polylines = $this->newQuery()
-            ->select(DB::raw('id, ST_AsGeoJSON(geom) as geom, name, description, st_length(geom, true)/1000 as length_km, image, created_at, updated_at'))
+            ->select(DB::raw('id, ST_AsGeoJSON(geom) as geom, name, description, image, created_at, updated_at'))
             ->where('id', $id)
             ->get();
 
@@ -64,6 +75,8 @@ class PolylinesModel extends Model
                     'description' => $p->description,
                     'created_at' => $p->created_at,
                     'updated_at' => $p->updated_at,
+                    'user_id'=>$p->user_id,
+                    'user_created' => $p->user_created,
                     'image' => $p->image,
                 ],
             ];

@@ -13,7 +13,16 @@ class PolygonsModel extends Model
     public function geojson_polygons()
     {
         $polygons = $this->newQuery()
-            ->select(DB::raw('id, ST_AsGeoJSON(geom) as geom, name, description, st_area(geom)/1000000 as area_ha, image, created_at, updated_at'))
+            ->select(DB::raw('polygons.id,
+            ST_AsGeoJSON(polygons.geom) as geom,
+            polygons.name,
+            polygons.description,
+            polygons.image,
+            polygons.created_at,
+            polygons.updated_at,
+            polygons.user_id,
+            users.name as user_created'))
+            ->LeftJoin('users', 'polygons.user_id', '=', 'users.id')
             ->get();
 
         // Struktur GeoJSON
@@ -33,6 +42,8 @@ class PolygonsModel extends Model
                     'created_at' => $p->created_at,
                     'updated_at' => $p->updated_at,
                     'image' => $p->image,
+                    'user_id' => $p->user_id,
+                    'user_created' => $p->user_created,
                 ],
             ];
 
@@ -64,6 +75,8 @@ class PolygonsModel extends Model
                     'description' => $p->description,
                     'created_at' => $p->created_at,
                     'updated_at' => $p->updated_at,
+                    'user_id' => $p->user_id,
+                    'user_created' => $p->user_created,
                     'image' => $p->image,
                 ],
             ];

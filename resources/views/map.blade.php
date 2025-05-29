@@ -258,7 +258,8 @@
                     "</button>" +
                     "</form>" +
                     "</div>" +
-                    "</div>";
+                    "</div>" +
+                    "</div>" + "<br>" + "<p>Dibuat Oleh: " + feature.properties.user_created + "</p>";
 
                 layer.bindPopup(popupContent);
                 layer.bindTooltip(
@@ -305,9 +306,7 @@
                     "</button>" +
                     "</form>" +
                     "</div>" +
-                    "</div>";
-
-
+                    "</div>" + "<br>" + "<p>Dibuat Oleh: " + feature.properties.user_created + "</p>";
                 layer.on({
                     click: function(e) {
                         layer.bindPopup(popupContent).openPopup();
@@ -355,7 +354,7 @@
                     "</button>" +
                     "</form>" +
                     "</div>" +
-                    "</div>";
+                    "</div>" + "<br>" + "<p>Dibuat Oleh: " + feature.properties.user_created + "</p>";
 
 
                 layer.on({
